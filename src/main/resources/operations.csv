@@ -1,0 +1,14 @@
+# User actions in the order they must run. Do not sort this file in code.
+# action is DEPOSIT, WITHDRAW, BORROW, or REPAY. amount is whole tokens.
+# Carol supplies the cash the others borrow. Bob keeps his USDC in his wallet so he can liquidate.
+timestamp,accountId,action,symbol,amount
+2026-03-01T12:00:00,carol,DEPOSIT,USDC,500000
+2026-03-01T12:00:01,carol,DEPOSIT,DAI,200000
+2026-03-01T12:01:00,alice,DEPOSIT,ETH,10
+2026-03-01T12:02:00,alice,BORROW,USDC,15000
+2026-03-01T12:03:00,erin,DEPOSIT,WBTC,0.5
+2026-03-01T12:04:00,erin,BORROW,DAI,10000
+2026-03-01T12:05:00,dave,DEPOSIT,SOL,500
+2026-03-01T12:06:00,dave,BORROW,USDC,44000
+2026-03-01T12:07:00,frank,DEPOSIT,DAI,20000
+2026-03-01T12:08:00,frank,BORROW,USDC,15000

@@ -1,0 +1,15 @@
+# Crash scenario, replayed after the operations, one row at a time, in this order.
+# SOL at 120 pushes Dave under a health factor of 1. ETH at 2200 leaves Alice solvent; ETH at 1600 does not.
+# DAI at 0.90 breaks Frank's peg. A later SOL print at 90 can liquidate Dave again if he is still short.
+timestamp,symbol,priceUsd
+2026-03-15T09:00:00,ETH,3000
+2026-03-15T09:00:00,WBTC,88000
+2026-03-15T09:00:00,SOL,145
+2026-03-15T09:00:00,USDC,1
+2026-03-15T09:00:00,DAI,1
+2026-03-15T09:30:00,SOL,120
+2026-03-15T10:00:00,ETH,2200
+2026-03-15T10:30:00,ETH,1600
+2026-03-15T11:00:00,WBTC,70000
+2026-03-15T11:30:00,DAI,0.90
+2026-03-15T12:00:00,SOL,90

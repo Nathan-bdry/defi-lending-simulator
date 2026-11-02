@@ -1,0 +1,15 @@
+# Amounts elsewhere in the data files are whole tokens, not base units.
+# openedAt is when interest starts (ISO-8601 local date-time, no offset).
+# type is STABLECOIN or VOLATILE. rateModel is LINEAR or KINKED.
+# LINEAR uses baseRate and slope1. Leave slope2 and optimalUtilization blank.
+# KINKED uses all four rate columns. slope1 is the annual rate at the kink, above the base.
+# STABLECOIN fills pegBand (fraction around $1) and leaves volatilityBuffer blank.
+# VOLATILE fills volatilityBuffer (fractional haircut) and leaves pegBand blank.
+# collateralFactor is the loan-to-value cap. liquidationThreshold weights the health factor.
+# liquidationBonus, reserveFactor, and closeFactor are fractions: 0.05 means 5%.
+openedAt,symbol,name,type,decimals,collateralFactor,liquidationThreshold,liquidationBonus,reserveFactor,closeFactor,rateModel,baseRate,slope1,slope2,optimalUtilization,pegBand,volatilityBuffer
+2026-03-01T00:00:00,ETH,Ether,VOLATILE,18,0.80,0.83,0.05,0.15,0.50,KINKED,0,0.028,0.80,0.80,,0.02
+2026-03-01T00:00:00,WBTC,Wrapped Bitcoin,VOLATILE,8,0.70,0.75,0.065,0.20,0.50,KINKED,0,0.04,0.80,0.60,,0.02
+2026-03-01T00:00:00,SOL,Solana,VOLATILE,9,0.65,0.70,0.10,0.20,0.50,KINKED,0,0.07,1.00,0.45,,0.05
+2026-03-01T00:00:00,USDC,USD Coin,STABLECOIN,6,0.75,0.80,0.045,0.10,0.50,KINKED,0,0.04,0.60,0.90,0.005,
+2026-03-01T00:00:00,DAI,Dai,STABLECOIN,18,0.75,0.80,0.045,0.10,0.50,LINEAR,0.01,0.05,,,0.01,
