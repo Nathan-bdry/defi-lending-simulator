@@ -1,0 +1,11 @@
+# One row per asset already in the wallet. Repeat accountId to add another balance.
+# role is USER or LIQUIDATOR. The file must name exactly one liquidator.
+# Wallet coins are not collateral. A deposit moves them into the pool.
+accountId,displayName,role,symbol,walletBalance
+carol,Carol Reyes,USER,USDC,500000
+carol,Carol Reyes,USER,DAI,200000
+alice,Alice Chen,USER,ETH,10
+erin,Erin Walsh,USER,WBTC,0.5
+dave,Dave Okonkwo,USER,SOL,500
+frank,Frank Meier,USER,DAI,20000
+bob,Bob Singh,LIQUIDATOR,USDC,100000

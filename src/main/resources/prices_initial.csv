@@ -1,0 +1,7 @@
+# Opening USD prices. Replay this file before the operations, so borrows have a price to check.
+timestamp,symbol,priceUsd
+2026-03-01T00:00:00,ETH,3200
+2026-03-01T00:00:00,WBTC,95000
+2026-03-01T00:00:00,SOL,145
+2026-03-01T00:00:00,USDC,1
+2026-03-01T00:00:00,DAI,1
