@@ -14,8 +14,17 @@ public final class PriceTick {
     private final BigDecimal priceUsd;
 
     public PriceTick(LocalDateTime timestamp, String symbol, BigDecimal priceUsd) {
-        // TODO: reject a null timestamp, a blank symbol, or a null or negative price
+        // DONE: reject a null timestamp, a blank symbol, or a null or negative price
         // (IllegalArgumentException). A price of zero is allowed: the asset has become worthless.
+        if (timestamp == null) {
+            throw new IllegalArgumentException("Timestamp cannot be null");
+        }
+        if (symbol == null || symbol.isBlank()) {
+            throw new IllegalArgumentException("Symbol cannot be blank");
+        }
+        if (priceUsd == null || priceUsd.compareTo(BigDecimal.ZERO) < 0) {
+            throw new IllegalArgumentException("Price cannot be null or negative");
+        }
         this.timestamp = timestamp;
         this.symbol = symbol;
         this.priceUsd = priceUsd;

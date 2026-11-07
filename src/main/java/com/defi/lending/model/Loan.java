@@ -74,26 +74,44 @@ public final class Loan {
         }
 
         public Builder assetSymbol(String assetSymbol) {
-            // TODO: reject a blank symbol before storing it.
+            // DONE: reject a blank symbol before storing it.
+            if (assetSymbol == null || assetSymbol.isBlank()) {
+                throw new IllegalArgumentException("Asset symbol cannot be blank");
+            }
             this.assetSymbol = assetSymbol;
             return this;
         }
 
         public Builder openedAt(LocalDateTime openedAt) {
-            // TODO: reject null before storing it.
+            // DONE: reject null before storing it.
+            if (openedAt == null) {
+                throw new IllegalArgumentException("Opened at cannot be null");
+            }
             this.openedAt = openedAt;
             return this;
         }
 
         public Builder outstanding(BigDecimal outstanding) {
-            // TODO: reject a null or negative amount before storing it. Zero is a repaid loan and is allowed.
+            // DONE: reject a null or negative amount before storing it. Zero is a repaid loan and is allowed.
+            if (outstanding == null || outstanding.compareTo(BigDecimal.ZERO) < 0) {
+                throw new IllegalArgumentException("Outstanding cannot be null or negative");
+            }
             this.outstanding = outstanding;
             return this;
         }
 
         public Loan build() {
-            // TODO: reject a missing symbol, openedAt, or outstanding (IllegalStateException).
+            // DONE: reject a missing symbol, openedAt, or outstanding (IllegalStateException).
             // Those checks belong here, once, so every construction path goes through them.
+            if (assetSymbol == null || assetSymbol.isBlank()) {
+                throw new IllegalStateException("Asset symbol is missing");
+            }
+            if (openedAt == null) {
+                throw new IllegalStateException("Opened at is missing");
+            }
+            if (outstanding == null || outstanding.compareTo(BigDecimal.ZERO) < 0) {
+                throw new IllegalStateException("Outstanding is missing");
+            }
             return new Loan(this);
         }
     }

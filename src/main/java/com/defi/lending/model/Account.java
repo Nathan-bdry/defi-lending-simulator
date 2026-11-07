@@ -19,7 +19,16 @@ public final class Account {
     private final Map<String, BigDecimal> wallet = new LinkedHashMap<>();
 
     public Account(String id, String displayName, AccountRole role) {
-        // TODO: reject a blank id, a blank displayName, or a null role (IllegalArgumentException).
+        // DONE: reject a blank id, a blank displayName, or a null role (IllegalArgumentException).
+        if (id == null || id.isBlank()) {
+            throw new IllegalArgumentException("Id cannot be null or empty");
+        }
+        if (displayName == null || displayName.isBlank()) {
+            throw new IllegalArgumentException("Display name cannot be null or empty");
+        }
+        if (role == null) {
+            throw new IllegalArgumentException("Role cannot be null");
+        }
         this.id = id;
         this.displayName = displayName;
         this.role = role;
@@ -47,15 +56,30 @@ public final class Account {
     }
 
     public void credit(String symbol, BigDecimal amount) {
-        // TODO: reject a blank symbol or a non-positive amount.
+        // DONE: reject a blank symbol or a non-positive amount.
         // Add the amount to the current balance of that symbol.
-        throw new UnsupportedOperationException("Account.credit");
+        if (symbol == null || symbol.isBlank()) {
+            throw new IllegalArgumentException("Symbol cannot be null or empty");
+        }
+        if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new IllegalArgumentException("Amount cannot be null or non-positive");
+        }
+        wallet.put(symbol, wallet.getOrDefault(symbol, BigDecimal.ZERO).add(amount));
     }
 
     public void debit(String symbol, BigDecimal amount) {
-        // TODO: reject a blank symbol, a non-positive amount, or an amount above getWalletBalance(symbol).
+        // DONE: reject a blank symbol, a non-positive amount, or an amount above getWalletBalance(symbol).
         // Spending coins the account does not hold is an IllegalArgumentException, not a pool-liquidity failure.
-        throw new UnsupportedOperationException("Account.debit");
+        if (symbol == null || symbol.isBlank()) {
+            throw new IllegalArgumentException("Symbol cannot be null or empty");
+        }
+        if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new IllegalArgumentException("Amount cannot be null or non-positive");
+        }
+        if (amount.compareTo(getWalletBalance(symbol)) > 0) {
+            throw new IllegalArgumentException("Amount cannot be greater than the wallet balance");
+        }
+        wallet.put(symbol, wallet.getOrDefault(symbol, BigDecimal.ZERO).subtract(amount));
     }
 
     @Override

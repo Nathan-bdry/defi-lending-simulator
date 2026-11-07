@@ -13,8 +13,14 @@ public final class VolatileToken extends Asset {
 
     public VolatileToken(String symbol, String name, int decimals, BigDecimal volatilityBuffer) {
         super(symbol, name, decimals);
-        // TODO: reject a null volatilityBuffer, or one that is not in [0, 1)
+        // DONE: reject a null volatilityBuffer, or one that is not in [0, 1)
         // (IllegalArgumentException). 0.02 values the token at 98% of the oracle price.
+        if (volatilityBuffer == null) {
+            throw new IllegalArgumentException("Volatility buffer cannot be null");
+        }
+        if (volatilityBuffer.compareTo(BigDecimal.ZERO) < 0 || volatilityBuffer.compareTo(BigDecimal.ONE) >= 0) {
+            throw new IllegalArgumentException("Volatility buffer must be in the half-open range [0, 1)");
+        }
         this.volatilityBuffer = volatilityBuffer;
     }
 
@@ -29,8 +35,14 @@ public final class VolatileToken extends Asset {
 
     @Override
     public BigDecimal unitValue(BigDecimal oraclePrice) {
-        // TODO: reject a null or negative oraclePrice (IllegalArgumentException).
+        // DONE: reject a null or negative oraclePrice (IllegalArgumentException).
         // Return oraclePrice * (1 - volatilityBuffer), rounded with Precision. Never negative.
-        throw new UnsupportedOperationException("VolatileToken.unitValue");
+        if (oraclePrice == null) {
+            throw new IllegalArgumentException("Oracle price cannot be null");
+        }
+        if (oraclePrice.compareTo(BigDecimal.ZERO) < 0) {
+            throw new IllegalArgumentException("Oracle price cannot be negative");
+        }
+        return oraclePrice.multiply(BigDecimal.ONE.subtract(volatilityBuffer)).setScale(getDecimals(), RoundingMode.HALF_UP);
     }
 }

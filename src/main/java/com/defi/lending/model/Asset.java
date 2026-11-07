@@ -15,8 +15,17 @@ public abstract class Asset {
     private final int decimals;
 
     protected Asset(String symbol, String name, int decimals) {
-        // TODO: reject a null or blank symbol, a null or blank name, and a negative decimals
+        // DONE: reject a null or blank symbol, a null or blank name, and a negative decimals
         // (IllegalArgumentException). Do not change the symbol's case; files and code must match it.
+        if (symbol == null || symbol.isBlank()) {
+            throw new IllegalArgumentException("Symbol cannot be null or empty");
+        }
+        if (name == null || name.isBlank()) {
+            throw new IllegalArgumentException("Name cannot be null or empty");
+        }
+        if (decimals < 0) {
+            throw new IllegalArgumentException("Decimals cannot be negative");
+        }
         this.symbol = symbol;
         this.name = name;
         this.decimals = decimals;

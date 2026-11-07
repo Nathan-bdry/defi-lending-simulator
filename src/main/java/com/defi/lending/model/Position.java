@@ -27,12 +27,18 @@ public final class Position {
 
     /** A new user: no collateral and no debt. */
     public static Position open(Account account) {
-        // TODO: reject a null account.
+        // DONE: reject a null account.
+        if (account == null) {
+            throw new IllegalArgumentException("Account cannot be null");
+        }
         return new Position(account, Map.of(), Map.of());
     }
 
     public static Builder builder(Account account) {
-        // TODO: reject a null account.
+        // DONE: reject a null account.
+        if (account == null) {
+            throw new IllegalArgumentException("Account cannot be null");
+        }
         return new Builder(account);
     }
 
@@ -114,21 +120,43 @@ public final class Position {
         }
 
         public Builder supply(String symbol, BigDecimal tokens) {
-            // TODO: reject a blank symbol or a null or negative amount.
+            // DONE: reject a blank symbol or a null or negative amount.
             // Store the amount, replacing any staged supply for that symbol. Zero clears the collateral.
-            this.supplied.put(symbol, tokens);
+            if (symbol == null || symbol.isBlank()) {
+                throw new IllegalArgumentException("Symbol cannot be blank");
+            }
+            if (tokens == null || tokens.compareTo(BigDecimal.ZERO) < 0) {
+                throw new IllegalArgumentException("Tokens cannot be null or negative");
+            }
+            if (tokens.compareTo(BigDecimal.ZERO) == 0) {
+                this.supplied.remove(symbol);
+            } else {
+                this.supplied.put(symbol, tokens);
+            }
             return this;
         }
 
         public Builder loan(Loan loan) {
-            // TODO: reject a null loan, and reject a second loan of a symbol already staged.
+            // DONE: reject a null loan, and reject a second loan of a symbol already staged.
             // One asset has one debt line.
+            if (loan == null) {
+                throw new IllegalArgumentException("Loan cannot be null");
+            }
+            if (loans.containsKey(loan.getAssetSymbol())) {
+                throw new IllegalArgumentException("Loan already staged");
+            }
             this.loans.put(loan.getAssetSymbol(), loan);
             return this;
         }
 
         public Position build() {
-            // TODO: reject a null account. Copy the staged maps so later builder calls cannot change the position.
+            // DONE: reject a null account. Copy the staged maps so later builder calls cannot change the position.
+            if (account == null) {
+                throw new IllegalArgumentException("Account cannot be null");
+            }
+            if (supplied == null || loans == null) {
+                throw new IllegalArgumentException("Supplied or loans cannot be null");
+            }
             return new Position(account, supplied, loans);
         }
     }

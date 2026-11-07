@@ -17,7 +17,22 @@ public final class Operation {
 
     public Operation(LocalDateTime timestamp, String accountId, OperationType type,
                      String symbol, BigDecimal amount) {
-        // TODO: reject a null timestamp or type, a blank accountId or symbol, or a null or non-positive amount.
+        // DONE: reject a null timestamp or type, a blank accountId or symbol, or a null or non-positive amount.
+        if (timestamp == null) {
+            throw new IllegalArgumentException("Timestamp cannot be null");
+        }
+        if (type == null) {
+            throw new IllegalArgumentException("Type cannot be null");
+        }
+        if (accountId == null || accountId.isBlank()) {
+            throw new IllegalArgumentException("Account ID cannot be blank");
+        }
+        if (symbol == null || symbol.isBlank()) {
+            throw new IllegalArgumentException("Symbol cannot be blank");
+        }
+        if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new IllegalArgumentException("Amount cannot be null or non-positive");
+        }
         this.timestamp = timestamp;
         this.accountId = accountId;
         this.type = type;

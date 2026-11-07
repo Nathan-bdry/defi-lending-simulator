@@ -34,11 +34,35 @@ public final class Market {
     public Market(Asset asset, BigDecimal collateralFactor, BigDecimal liquidationThreshold,
                   BigDecimal liquidationBonus, BigDecimal reserveFactor, BigDecimal closeFactor,
                   InterestRateModel rateModel, LocalDateTime openedAt) {
-        // TODO: reject a null asset, rateModel, or openedAt.
+        // DONE: reject a null asset, rateModel, or openedAt.
         // collateralFactor is in (0, 1]. liquidationThreshold is in (0, 1] and >= collateralFactor,
         // otherwise a borrower who used the full loan-to-value would already be underwater.
         // liquidationBonus >= 0. reserveFactor is in [0, 1). closeFactor is in (0, 1].
         // A new pool holds nothing: cash, claims, and reserves start at zero, and interest starts at openedAt.
+        if (asset == null) {
+            throw new IllegalArgumentException("Asset cannot be null");
+        }
+        if (rateModel == null) {
+            throw new IllegalArgumentException("Rate model cannot be null");
+        }
+        if (openedAt == null) {
+            throw new IllegalArgumentException("Opened at cannot be null");
+        }
+        if (collateralFactor == null || collateralFactor.compareTo(BigDecimal.ZERO) <= 0 || collateralFactor.compareTo(BigDecimal.ONE) > 0) {
+            throw new IllegalArgumentException("Collateral factor must be in the range (0, 1]");
+        }
+        if (liquidationThreshold == null || liquidationThreshold.compareTo(BigDecimal.ZERO) <= 0 || liquidationThreshold.compareTo(BigDecimal.ONE) > 0 || liquidationThreshold.compareTo(collateralFactor) < 0) {
+            throw new IllegalArgumentException("Liquidation threshold must be in the range (0, 1] and >= collateral factor");
+        }
+        if (liquidationBonus == null || liquidationBonus.compareTo(BigDecimal.ZERO) < 0) {
+            throw new IllegalArgumentException("Liquidation bonus must be >= 0");
+        }
+        if (reserveFactor == null || reserveFactor.compareTo(BigDecimal.ZERO) < 0 || reserveFactor.compareTo(BigDecimal.ONE) >= 0) {
+            throw new IllegalArgumentException("Reserve factor must be in the range [0, 1)");
+        }
+        if (closeFactor == null || closeFactor.compareTo(BigDecimal.ZERO) <= 0 || closeFactor.compareTo(BigDecimal.ONE) > 0) {
+            throw new IllegalArgumentException("Close factor must be in the range (0, 1]");
+        }
         this.asset = asset;
         this.collateralFactor = collateralFactor;
         this.liquidationThreshold = liquidationThreshold;
@@ -107,36 +131,67 @@ public final class Market {
     }
 
     public BigDecimal utilization() {
-        // TODO: when totalSupplied is zero, return zero. An empty pool is not "fully used".
+        // DONE: when totalSupplied is zero, return zero. An empty pool is not "fully used".
         // Otherwise return totalBorrowed / totalSupplied, rounded with Precision.
         // Compare with compareTo, not equals.
-        throw new UnsupportedOperationException("Market.utilization");
+        if (totalSupplied.compareTo(BigDecimal.ZERO) == 0) {
+            return BigDecimal.ZERO;
+        }
+        return totalBorrowed.divide(totalSupplied, RoundingMode.HALF_UP);
     }
 
     public void onDeposit(BigDecimal amount) {
-        // TODO: reject a null or non-positive amount. Add it to cash and to totalSupplied.
-        throw new UnsupportedOperationException("Market.onDeposit");
+        // DONE: reject a null or non-positive amount. Add it to cash and to totalSupplied.
+        if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new IllegalArgumentException("Amount cannot be null or non-positive");
+        }
+        cash = cash.add(amount);
+        totalSupplied = totalSupplied.add(amount);
     }
 
     public void onWithdraw(BigDecimal amount) {
-        // TODO: reject a null or non-positive amount, an amount above cash, or an amount above totalSupplied
+        // DONE: reject a null or non-positive amount, an amount above cash, or an amount above totalSupplied
         // (IllegalArgumentException). Subtract it from cash and from totalSupplied.
         // This does not check health. LendingService turns a cash shortage into InsufficientLiquidityException
         // before it calls this method, so the market stays free of that exception type.
-        throw new UnsupportedOperationException("Market.onWithdraw");
+        if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new IllegalArgumentException("Amount cannot be null or non-positive");
+        }
+        if (amount.compareTo(cash) > 0) {
+            throw new IllegalArgumentException("Amount cannot be greater than cash");
+        }
+        if (amount.compareTo(totalSupplied) > 0) {
+            throw new IllegalArgumentException("Amount cannot be greater than totalSupplied");
+        }
+        cash = cash.subtract(amount);
+        totalSupplied = totalSupplied.subtract(amount);
     }
 
     public void onBorrow(BigDecimal amount) {
-        // TODO: reject a null or non-positive amount, or an amount above cash, with IllegalArgumentException.
+        // DONE: reject a null or non-positive amount, or an amount above cash, with IllegalArgumentException.
         // The pool cannot lend tokens it does not hold. Subtract from cash and add to totalBorrowed.
         // LendingService is what throws InsufficientLiquidityException, and it does so before calling this.
-        throw new UnsupportedOperationException("Market.onBorrow");
+        if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new IllegalArgumentException("Amount cannot be null or non-positive");
+        }
+        if (amount.compareTo(cash) > 0) {
+            throw new IllegalArgumentException("Amount cannot be greater than cash");
+        }
+        cash = cash.subtract(amount);
+        totalBorrowed = totalBorrowed.add(amount);
     }
 
     public void onRepay(BigDecimal amount) {
-        // TODO: reject a null or non-positive amount, or an amount above totalBorrowed.
+        // DONE: reject a null or non-positive amount, or an amount above totalBorrowed.
         // Add to cash and subtract from totalBorrowed.
-        throw new UnsupportedOperationException("Market.onRepay");
+        if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new IllegalArgumentException("Amount cannot be null or non-positive");
+        }
+        if (amount.compareTo(totalBorrowed) > 0) {
+            throw new IllegalArgumentException("Amount cannot be greater than totalBorrowed");
+        }
+        cash = cash.add(amount);
+        totalBorrowed = totalBorrowed.subtract(amount);
     }
 
     /**
@@ -145,9 +200,24 @@ public final class Market {
      */
     public void bookAccrual(BigDecimal newTotalSupplied, BigDecimal newTotalBorrowed,
                             BigDecimal addedReserves, LocalDateTime at) {
-        // TODO: reject nulls, a timestamp before lastAccrual, a negative reserve increment,
+        // DONE: reject nulls, a timestamp before lastAccrual, a negative reserve increment,
         // or totals that would break cash + newTotalBorrowed = newTotalSupplied + (reserves + addedReserves).
         // Then store the new totals, add the reserves, and set lastAccrual to `at`.
-        throw new UnsupportedOperationException("Market.bookAccrual");
+        if (newTotalSupplied == null || newTotalBorrowed == null || addedReserves == null || at == null) {
+            throw new IllegalArgumentException("Nulls cannot be passed");
+        }
+        if (at.compareTo(lastAccrual) < 0) {
+            throw new IllegalArgumentException("Timestamp cannot be before last accrual");
+        }
+        if (addedReserves.compareTo(BigDecimal.ZERO) < 0) {
+            throw new IllegalArgumentException("Reserve increment cannot be negative");
+        }
+        if (cash.add(newTotalBorrowed).compareTo(newTotalSupplied.add(reserves.add(addedReserves))) != 0) {
+            throw new IllegalArgumentException("Cash + newTotalBorrowed != newTotalSupplied + (reserves + addedReserves)");
+        }
+        totalSupplied = newTotalSupplied;
+        totalBorrowed = newTotalBorrowed;
+        reserves = reserves.add(addedReserves);
+        lastAccrual = at;
     }
 }
