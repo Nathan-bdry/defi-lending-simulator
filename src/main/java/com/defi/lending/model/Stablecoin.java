@@ -1,6 +1,7 @@
 package com.defi.lending.model;
 
 import java.math.BigDecimal;
+import com.defi.lending.Precision;
 
 /**
  * A token that targets a one-dollar peg. Inside the band the oracle price is trusted;
@@ -45,8 +46,8 @@ public final class Stablecoin extends Asset {
             throw new IllegalArgumentException("Oracle price cannot be negative");
         }
         if (oraclePrice.compareTo(BigDecimal.ONE.subtract(pegBand)) < 0 || oraclePrice.compareTo(BigDecimal.ONE.add(pegBand)) > 0) {
-            return oraclePrice.multiply(BigDecimal.ONE.subtract(pegBand)).setScale(getDecimals(), RoundingMode.HALF_UP);
+            return oraclePrice.multiply(BigDecimal.ONE.subtract(pegBand)).setScale(Precision.SCALE, Precision.ROUNDING);
         }
-        throw new UnsupportedOperationException("Stablecoin.unitValue");
+        return oraclePrice;
     }
 }

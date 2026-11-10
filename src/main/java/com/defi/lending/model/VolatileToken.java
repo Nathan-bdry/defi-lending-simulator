@@ -1,6 +1,7 @@
 package com.defi.lending.model;
 
 import java.math.BigDecimal;
+import com.defi.lending.Precision;
 
 /**
  * A token whose price is expected to move. Collateral is valued below the oracle print
@@ -43,6 +44,6 @@ public final class VolatileToken extends Asset {
         if (oraclePrice.compareTo(BigDecimal.ZERO) < 0) {
             throw new IllegalArgumentException("Oracle price cannot be negative");
         }
-        return oraclePrice.multiply(BigDecimal.ONE.subtract(volatilityBuffer)).setScale(getDecimals(), RoundingMode.HALF_UP);
+        return oraclePrice.multiply(BigDecimal.ONE.subtract(volatilityBuffer)).setScale(Precision.SCALE, Precision.ROUNDING);
     }
 }
