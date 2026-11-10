@@ -1,6 +1,7 @@
 package com.defi.lending.rates;
 
 import java.math.BigDecimal;
+import com.defi.lending.Precision;
 
 /**
  * Aave-style borrow rate: a gentle slope up to an optimal utilization, then a steep slope.
@@ -75,9 +76,9 @@ public final class KinkedRateModel implements InterestRateModel {
             throw new IllegalArgumentException("Utilization cannot be null or negative");
         }
         if (utilization.compareTo(optimalUtilization) <= 0) {
-            return baseRate.add(slope1.multiply(utilization.divide(optimalUtilization, RoundingMode.HALF_UP))).setScale(Precision.SCALE, RoundingMode.HALF_UP);
+            return baseRate.add(slope1.multiply(utilization.divide(optimalUtilization, Precision.SCALE, Precision.ROUNDING))).setScale(Precision.SCALE, Precision.ROUNDING);
         }
-        return baseRate.add(slope1).add(slope2.multiply(utilization.subtract(optimalUtilization).divide(BigDecimal.ONE.subtract(optimalUtilization), RoundingMode.HALF_UP))).setScale(Precision.SCALE, RoundingMode.HALF_UP);
+        return baseRate.add(slope1).add(slope2.multiply(utilization.subtract(optimalUtilization).divide(BigDecimal.ONE.subtract(optimalUtilization), Precision.SCALE, Precision.ROUNDING))).setScale(Precision.SCALE, Precision.ROUNDING);
     }
 
     @Override
@@ -91,6 +92,6 @@ public final class KinkedRateModel implements InterestRateModel {
         if (reserveFactor == null || reserveFactor.compareTo(BigDecimal.ZERO) < 0 || reserveFactor.compareTo(BigDecimal.ONE) >= 0) {
             throw new IllegalArgumentException("Reserve factor must be in the range [0, 1)");
         }
-        return borrowRate(utilization).multiply(utilization).multiply(BigDecimal.ONE.subtract(reserveFactor)).setScale(Precision.SCALE, RoundingMode.HALF_UP);
+        return borrowRate(utilization).multiply(utilization).multiply(BigDecimal.ONE.subtract(reserveFactor)).setScale(Precision.SCALE, Precision.ROUNDING);
     }
 }

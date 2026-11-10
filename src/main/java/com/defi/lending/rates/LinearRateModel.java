@@ -2,6 +2,8 @@ package com.defi.lending.rates;
 
 import java.math.BigDecimal;
 
+import com.defi.lending.Precision;
+
 /**
  * Borrow rate rises in a straight line with utilization.
  * Used for a listing whose rate should stay predictable, such as the DAI pool in the sample file.
@@ -48,7 +50,7 @@ public final class LinearRateModel implements InterestRateModel {
         if (utilization == null || utilization.compareTo(BigDecimal.ZERO) < 0) {
             throw new IllegalArgumentException("Utilization cannot be null or negative");
         }
-        return baseRate.add(slope1.multiply(utilization)).setScale(Precision.SCALE, RoundingMode.HALF_UP);
+        return baseRate.add(slope1.multiply(utilization)).setScale(Precision.SCALE, Precision.ROUNDING);
     }
 
     @Override
@@ -63,6 +65,6 @@ public final class LinearRateModel implements InterestRateModel {
         if (reserveFactor == null || reserveFactor.compareTo(BigDecimal.ZERO) < 0 || reserveFactor.compareTo(BigDecimal.ONE) >= 0) {
             throw new IllegalArgumentException("Reserve factor must be in the range [0, 1)");
         }
-        return borrowRate(utilization).multiply(utilization).multiply(BigDecimal.ONE.subtract(reserveFactor)).setScale(Precision.SCALE, RoundingMode.HALF_UP);
+        return borrowRate(utilization).multiply(utilization).multiply(BigDecimal.ONE.subtract(reserveFactor)).setScale(Precision.SCALE, Precision.ROUNDING);
     }
 }
