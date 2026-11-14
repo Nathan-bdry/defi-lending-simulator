@@ -3,6 +3,7 @@ package com.defi.lending.model;
 import com.defi.lending.rates.InterestRateModel;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDateTime;
 
 /**
