@@ -1,9 +1,9 @@
 package com.defi.lending.model;
 
+import com.defi.lending.Precision;
 import com.defi.lending.rates.InterestRateModel;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.time.LocalDateTime;
 
 /**
@@ -138,7 +138,7 @@ public final class Market {
         if (totalSupplied.compareTo(BigDecimal.ZERO) == 0) {
             return BigDecimal.ZERO;
         }
-        return totalBorrowed.divide(totalSupplied, RoundingMode.HALF_UP);
+        return totalBorrowed.divide(totalSupplied, Precision.SCALE, Precision.ROUNDING);
     }
 
     public void onDeposit(BigDecimal amount) {
