@@ -1,6 +1,9 @@
 package com.defi.lending.service;
 
+import com.defi.lending.Precision;
 import com.defi.lending.model.HealthBand;
+import com.defi.lending.model.Loan;
+import com.defi.lending.model.Market;
 import com.defi.lending.model.MarketBook;
 import com.defi.lending.model.Position;
 import com.defi.lending.oracle.PriceOracle;
@@ -18,25 +21,42 @@ public final class HealthFactorService {
     private final PriceOracle oracle;
 
     public HealthFactorService(MarketBook markets, PriceOracle oracle) {
-        // TODO: reject a null book or oracle.
+        // DONE: reject a null book or oracle.
+        if (markets == null) {
+            throw new IllegalArgumentException("Market book cannot be null");
+        }
+        if (oracle == null) {
+            throw new IllegalArgumentException("Oracle cannot be null");
+        }
         this.markets = markets;
         this.oracle = oracle;
     }
 
     /** Sum of token supply times {@code Asset.unitValue}. Not weighted by the liquidation threshold. */
     public BigDecimal collateralValue(Position position) {
-        // TODO: for each supplied symbol, look up the market and the oracle price.
+        // DONE: for each supplied symbol, look up the market and the oracle price.
         // Add supply * asset.unitValue(price). A missing market or a missing price is an IllegalStateException
         // that names the symbol: the scenario must publish a price before the asset is used as collateral.
         // An empty position is zero, not an error.
-        throw new UnsupportedOperationException("HealthFactorService.collateralValue");
+        BigDecimal sum = BigDecimal.ZERO;
+        for (String symbol : position.suppliedSymbols()) {
+            sum = sum.add(usdValue(requireMarket(symbol), position.supplyOf(symbol)));
+        }
+        return sum;
     }
 
     /** Collateral value weighted by each market's liquidation threshold. The numerator of the health factor. */
     public BigDecimal weightedCollateral(Position position) {
-        // TODO: same sum as collateralValue, but multiply each asset's USD value by that market's
+        // DONE: same sum as collateralValue, but multiply each asset's USD value by that market's
         // liquidation threshold before adding it.
-        throw new UnsupportedOperationException("HealthFactorService.weightedCollateral");
+        BigDecimal sum = BigDecimal.ZERO;
+        for (String symbol : position.suppliedSymbols()) {
+            Market market = requireMarket(symbol);
+            sum = sum.add(usdValue(market, position.supplyOf(symbol))
+                    .multiply(market.getLiquidationThreshold())
+                    .setScale(Precision.SCALE, Precision.ROUNDING));
+        }
+        return sum;
     }
 
     /**
@@ -44,16 +64,27 @@ public final class HealthFactorService {
      * Uses the collateral factor (loan-to-value), which is tighter than the liquidation threshold.
      */
     public BigDecimal borrowingPower(Position position) {
-        // TODO: sum of each asset's USD collateral value times that market's collateral factor.
-        throw new UnsupportedOperationException("HealthFactorService.borrowingPower");
+        // DONE: sum of each asset's USD collateral value times that market's collateral factor.
+        BigDecimal sum = BigDecimal.ZERO;
+        for (String symbol : position.suppliedSymbols()) {
+            Market market = requireMarket(symbol);
+            sum = sum.add(usdValue(market, position.supplyOf(symbol))
+                    .multiply(market.getCollateralFactor())
+                    .setScale(Precision.SCALE, Precision.ROUNDING));
+        }
+        return sum;
     }
 
     /** Sum of outstanding debt times the debt asset's unit value. */
     public BigDecimal debtValue(Position position) {
-        // TODO: for each loan, add outstanding * debtAsset.unitValue(oracle price).
+        // DONE: for each loan, add outstanding * debtAsset.unitValue(oracle price).
         // A missing market or price is an IllegalStateException naming the symbol.
         // No loans means zero.
-        throw new UnsupportedOperationException("HealthFactorService.debtValue");
+        BigDecimal sum = BigDecimal.ZERO;
+        for (Loan loan : position.getLoans()) {
+            sum = sum.add(usdValue(requireMarket(loan.getAssetSymbol()), loan.getOutstanding()));
+        }
+        return sum;
     }
 
     /**
@@ -62,15 +93,46 @@ public final class HealthFactorService {
      * underwater. Do not substitute zero, which would look liquidatable.
      */
     public Optional<BigDecimal> healthFactor(Position position) {
-        // TODO: when debtValue is zero, return empty. Otherwise weightedCollateral / debtValue,
+        // DONE: when debtValue is zero, return empty. Otherwise weightedCollateral / debtValue,
         // rounded with Precision. Use compareTo against zero.
-        throw new UnsupportedOperationException("HealthFactorService.healthFactor");
+        BigDecimal debt = debtValue(position);
+        if (debt.compareTo(BigDecimal.ZERO) == 0) {
+            return Optional.empty();
+        }
+        return Optional.of(weightedCollateral(position).divide(debt, Precision.SCALE, Precision.ROUNDING));
     }
 
     public HealthBand band(Position position) {
-        // TODO: NO_DEBT when healthFactor is empty.
+        // DONE: NO_DEBT when healthFactor is empty.
         // AT_THRESHOLD when the factor compares equal to 1.
         // HEALTHY when it is strictly above 1, UNDERWATER when it is strictly below.
-        throw new UnsupportedOperationException("HealthFactorService.band");
+        Optional<BigDecimal> factor = healthFactor(position);
+        if (factor.isEmpty()) {
+            return HealthBand.NO_DEBT;
+        }
+        int compared = factor.get().compareTo(BigDecimal.ONE);
+        if (compared > 0) {
+            return HealthBand.HEALTHY;
+        }
+        if (compared == 0) {
+            return HealthBand.AT_THRESHOLD;
+        }
+        return HealthBand.UNDERWATER;
+    }
+
+    private Market requireMarket(String symbol) {
+        return markets.find(symbol).orElseThrow(
+                () -> new IllegalStateException("No market for " + symbol));
+    }
+
+    private BigDecimal requirePrice(String symbol) {
+        return oracle.getPrice(symbol).orElseThrow(
+                () -> new IllegalStateException("No price for " + symbol));
+    }
+
+    private BigDecimal usdValue(Market market, BigDecimal tokens) {
+        BigDecimal price = requirePrice(market.getAsset().getSymbol());
+        return tokens.multiply(market.getAsset().unitValue(price))
+                .setScale(Precision.SCALE, Precision.ROUNDING);
     }
 }
