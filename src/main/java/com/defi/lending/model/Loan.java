@@ -1,5 +1,7 @@
 package com.defi.lending.model;
 
+import com.defi.lending.Precision;
+
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
@@ -36,28 +38,46 @@ public final class Loan {
     }
 
     public void capitalize(BigDecimal factor) {
-        // TODO: reject a null factor or a factor strictly below 1 (interest never shrinks a debt).
+        // DONE: reject a null factor or a factor strictly below 1 (interest never shrinks a debt).
         // A factor of exactly 1 leaves the balance unchanged.
         // Otherwise set outstanding to outstanding * factor, rounded with Precision.
-        throw new UnsupportedOperationException("Loan.capitalize");
+        if (factor == null || factor.compareTo(BigDecimal.ONE) < 0) {
+            throw new IllegalArgumentException("Factor cannot be null or strictly below 1");
+        }
+        if (factor.compareTo(BigDecimal.ONE) == 0) {
+            return;
+        }
+        outstanding = outstanding.multiply(factor).setScale(Precision.SCALE, Precision.ROUNDING);
     }
 
     public void increase(BigDecimal amount) {
-        // TODO: reject a null or non-positive amount. Add it to outstanding.
-        throw new UnsupportedOperationException("Loan.increase");
+        // DONE: reject a null or non-positive amount. Add it to outstanding.
+        if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new IllegalArgumentException("Amount cannot be null or non-positive");
+        }
+        outstanding = outstanding.add(amount);
     }
 
     public void decrease(BigDecimal amount) {
-        // TODO: reject a null or non-positive amount, or an amount above outstanding.
+        // DONE: reject a null or non-positive amount, or an amount above outstanding.
         // Subtract it. A repayment that clears the debt leaves outstanding at zero;
         // the position, not the loan, decides when to drop the entry.
-        throw new UnsupportedOperationException("Loan.decrease");
+        if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new IllegalArgumentException("Amount cannot be null or non-positive");
+        }
+        if (amount.compareTo(outstanding) > 0) {
+            throw new IllegalArgumentException("Amount cannot be greater than outstanding");
+        }
+        outstanding = outstanding.subtract(amount);
     }
 
     /** Deep copy so a health-factor preview cannot mutate the live debt. */
     public Builder toBuilder() {
-        // TODO: return a builder with the same symbol, openedAt, and outstanding value (not this instance).
-        throw new UnsupportedOperationException("Loan.toBuilder");
+        // DONE: return a builder with the same symbol, openedAt, and outstanding value (not this instance).
+        return builder()
+                .assetSymbol(assetSymbol)
+                .openedAt(openedAt)
+                .outstanding(outstanding);
     }
 
     /**
