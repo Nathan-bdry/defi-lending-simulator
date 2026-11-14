@@ -17,33 +17,50 @@ public final class PriceOracle {
     private final List<PriceListener> listeners = new ArrayList<>();
 
     public void subscribe(PriceListener listener) {
-        // TODO: reject null. A second subscribe of the same instance must not add a duplicate,
+        // DONE: reject null. A second subscribe of the same instance must not add a duplicate,
         // or one price tick would liquidate the same position twice.
-        throw new UnsupportedOperationException("PriceOracle.subscribe");
+        if (listener == null) {
+            throw new IllegalArgumentException("Listener cannot be null");
+        }
+        if (listeners.contains(listener)) {
+            return;
+        }
+        listeners.add(listener);
     }
 
     public void unsubscribe(PriceListener listener) {
-        // TODO: remove that listener if it is present. Do nothing when it was never subscribed.
-        throw new UnsupportedOperationException("PriceOracle.unsubscribe");
+        // DONE: remove that listener if it is present. Do nothing when it was never subscribed.
+        listeners.remove(listener);
     }
 
     public Optional<BigDecimal> getPrice(String symbol) {
-        // TODO: return the latest price, or empty when that symbol has never been published.
+        // DONE: return the latest price, or empty when that symbol has never been published.
         // Do not throw for an unknown symbol; the caller decides whether a missing price is fatal.
-        throw new UnsupportedOperationException("PriceOracle.getPrice");
+        return Optional.ofNullable(prices.get(symbol));
     }
 
     public void publish(PriceTick tick) {
-        // TODO: store tick's price under its symbol, then notify every listener with that same tick.
+        // DONE: store tick's price under its symbol, then notify every listener with that same tick.
         // Store first, so a listener that calls getPrice sees the new value.
         // Walk a copy of the listener list: a listener is allowed to unsubscribe itself from the callback.
-        throw new UnsupportedOperationException("PriceOracle.publish");
+        if (tick == null) {
+            throw new IllegalArgumentException("Tick cannot be null");
+        }
+        prices.put(tick.getSymbol(), tick.getPriceUsd());
+        for (PriceListener listener : List.copyOf(listeners)) {
+            listener.onPriceUpdate(tick);
+        }
     }
 
     public void replay(List<PriceTick> scenario) {
-        // TODO: reject a null list. Publish each tick in list order.
+        // DONE: reject a null list. Publish each tick in list order.
         // Do not sort. The file is the chronology the author of the scenario chose, including two ticks
         // that share a timestamp.
-        throw new UnsupportedOperationException("PriceOracle.replay");
+        if (scenario == null) {
+            throw new IllegalArgumentException("Scenario cannot be null");
+        }
+        for (PriceTick tick : scenario) {
+            publish(tick);
+        }
     }
 }
