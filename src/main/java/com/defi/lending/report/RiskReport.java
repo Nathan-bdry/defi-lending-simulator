@@ -13,7 +13,13 @@ public final class RiskReport {
     private final List<PositionRisk> ranked;
 
     public RiskReport(LocalDateTime asOf, List<PositionRisk> ranked) {
-        // TODO: reject a null timestamp or a null list.
+        // DONE: reject a null timestamp or a null list.
+        if (asOf == null) {
+            throw new IllegalArgumentException("Timestamp cannot be null");
+        }
+        if (ranked == null) {
+            throw new IllegalArgumentException("Ranked positions cannot be null");
+        }
         this.asOf = asOf;
         this.ranked = List.copyOf(ranked);
     }
