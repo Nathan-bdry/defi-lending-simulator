@@ -12,7 +12,7 @@ import java.util.List;
 public final class RiskReportPrinter {
 
     public void print(RiskReport report, PrintStream out) {
-        // DONE: reject a null report or stream.
+        // reject a null report or stream.
         // Print the timestamp, then one line per position, riskiest first:
         // rank, account id, display name, health factor to 4 decimal places (HALF_UP),
         // band, collateral USD, debt USD.

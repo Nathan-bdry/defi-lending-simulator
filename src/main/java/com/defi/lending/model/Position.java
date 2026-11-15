@@ -29,7 +29,7 @@ public final class Position {
 
     /** A new user: no collateral and no debt. */
     public static Position open(Account account) {
-        // DONE: reject a null account.
+        // reject a null account.
         if (account == null) {
             throw new IllegalArgumentException("Account cannot be null");
         }
@@ -37,7 +37,7 @@ public final class Position {
     }
 
     public static Builder builder(Account account) {
-        // DONE: reject a null account.
+        // reject a null account.
         if (account == null) {
             throw new IllegalArgumentException("Account cannot be null");
         }
@@ -67,7 +67,7 @@ public final class Position {
     }
 
     public void addSupply(String symbol, BigDecimal amount) {
-        // DONE: reject a blank symbol or a non-positive amount.
+        // reject a blank symbol or a non-positive amount.
         // Add the amount to any supply already stored for the symbol.
         if (symbol == null || symbol.isBlank()) {
             throw new IllegalArgumentException("Symbol cannot be blank");
@@ -79,7 +79,7 @@ public final class Position {
     }
 
     public void reduceSupply(String symbol, BigDecimal amount) {
-        // DONE: reject a blank symbol, a non-positive amount, or an amount above supplyOf(symbol).
+        // reject a blank symbol, a non-positive amount, or an amount above supplyOf(symbol).
         // Remove the map entry when the balance reaches zero so an empty supply is not collateral.
         if (symbol == null || symbol.isBlank()) {
             throw new IllegalArgumentException("Symbol cannot be blank");
@@ -99,7 +99,7 @@ public final class Position {
     }
 
     public void capitalizeSupply(String symbol, BigDecimal factor) {
-        // DONE: when the symbol is not supplied, do nothing.
+        // when the symbol is not supplied, do nothing.
         // Otherwise reject a null factor or a factor strictly below 1, and multiply the stored supply,
         // rounded with Precision. A factor of 1 is a no-op.
         if (!supplied.containsKey(symbol)) {
@@ -119,7 +119,7 @@ public final class Position {
      * The added amount is tokens just borrowed, at {@code at}.
      */
     public void increaseDebt(String symbol, BigDecimal amount, LocalDateTime at) {
-        // DONE: reject a blank symbol, a non-positive amount, or a null timestamp.
+        // reject a blank symbol, a non-positive amount, or a null timestamp.
         // If a loan exists, increase it. If not, build one opened at `at` with that outstanding amount.
         if (symbol == null || symbol.isBlank()) {
             throw new IllegalArgumentException("Symbol cannot be blank");
@@ -143,7 +143,7 @@ public final class Position {
     }
 
     public void reduceDebt(String symbol, BigDecimal amount) {
-        // DONE: reject a blank symbol, a non-positive amount, or a missing loan.
+        // reject a blank symbol, a non-positive amount, or a missing loan.
         // Decrease the loan. When outstanding hits zero, remove it so the health factor sees no debt.
         if (symbol == null || symbol.isBlank()) {
             throw new IllegalArgumentException("Symbol cannot be blank");
@@ -160,7 +160,7 @@ public final class Position {
     }
 
     public Builder toBuilder() {
-        // DONE: deep-copy supplies and loans into a new builder for this account.
+        // deep-copy supplies and loans into a new builder for this account.
         // A shallow copy would let a health-factor preview capitalize the live loan.
         Builder copy = builder(account);
         supplied.forEach(copy::supply);
@@ -185,7 +185,7 @@ public final class Position {
         }
 
         public Builder supply(String symbol, BigDecimal tokens) {
-            // DONE: reject a blank symbol or a null or negative amount.
+            // reject a blank symbol or a null or negative amount.
             // Store the amount, replacing any staged supply for that symbol. Zero clears the collateral.
             if (symbol == null || symbol.isBlank()) {
                 throw new IllegalArgumentException("Symbol cannot be blank");
@@ -202,7 +202,7 @@ public final class Position {
         }
 
         public Builder loan(Loan loan) {
-            // DONE: reject a null loan, and reject a second loan of a symbol already staged.
+            // reject a null loan, and reject a second loan of a symbol already staged.
             // One asset has one debt line.
             if (loan == null) {
                 throw new IllegalArgumentException("Loan cannot be null");
@@ -215,7 +215,7 @@ public final class Position {
         }
 
         public Position build() {
-            // DONE: reject a null account. Copy the staged maps so later builder calls cannot change the position.
+            // reject a null account. Copy the staged maps so later builder calls cannot change the position.
             if (account == null) {
                 throw new IllegalArgumentException("Account cannot be null");
             }

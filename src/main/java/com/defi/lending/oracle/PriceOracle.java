@@ -17,7 +17,7 @@ public final class PriceOracle {
     private final List<PriceListener> listeners = new ArrayList<>();
 
     public void subscribe(PriceListener listener) {
-        // DONE: reject null. A second subscribe of the same instance must not add a duplicate,
+        // reject null. A second subscribe of the same instance must not add a duplicate,
         // or one price tick would liquidate the same position twice.
         if (listener == null) {
             throw new IllegalArgumentException("Listener cannot be null");
@@ -29,18 +29,18 @@ public final class PriceOracle {
     }
 
     public void unsubscribe(PriceListener listener) {
-        // DONE: remove that listener if it is present. Do nothing when it was never subscribed.
+        // remove that listener if it is present. Do nothing when it was never subscribed.
         listeners.remove(listener);
     }
 
     public Optional<BigDecimal> getPrice(String symbol) {
-        // DONE: return the latest price, or empty when that symbol has never been published.
+        // return the latest price, or empty when that symbol has never been published.
         // Do not throw for an unknown symbol; the caller decides whether a missing price is fatal.
         return Optional.ofNullable(prices.get(symbol));
     }
 
     public void publish(PriceTick tick) {
-        // DONE: store tick's price under its symbol, then notify every listener with that same tick.
+        // store tick's price under its symbol, then notify every listener with that same tick.
         // Store first, so a listener that calls getPrice sees the new value.
         // Walk a copy of the listener list: a listener is allowed to unsubscribe itself from the callback.
         if (tick == null) {
@@ -53,7 +53,7 @@ public final class PriceOracle {
     }
 
     public void replay(List<PriceTick> scenario) {
-        // DONE: reject a null list. Publish each tick in list order.
+        // reject a null list. Publish each tick in list order.
         // Do not sort. The file is the chronology the author of the scenario chose, including two ticks
         // that share a timestamp.
         if (scenario == null) {

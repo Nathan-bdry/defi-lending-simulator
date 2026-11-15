@@ -19,7 +19,7 @@ public final class Account {
     private final Map<String, BigDecimal> wallet = new LinkedHashMap<>();
 
     public Account(String id, String displayName, AccountRole role) {
-        // DONE: reject a blank id, a blank displayName, or a null role (IllegalArgumentException).
+        // reject a blank id, a blank displayName, or a null role (IllegalArgumentException).
         if (id == null || id.isBlank()) {
             throw new IllegalArgumentException("Id cannot be null or empty");
         }
@@ -56,7 +56,7 @@ public final class Account {
     }
 
     public void credit(String symbol, BigDecimal amount) {
-        // DONE: reject a blank symbol or a non-positive amount.
+        // reject a blank symbol or a non-positive amount.
         // Add the amount to the current balance of that symbol.
         if (symbol == null || symbol.isBlank()) {
             throw new IllegalArgumentException("Symbol cannot be null or empty");
@@ -68,7 +68,7 @@ public final class Account {
     }
 
     public void debit(String symbol, BigDecimal amount) {
-        // DONE: reject a blank symbol, a non-positive amount, or an amount above getWalletBalance(symbol).
+        // reject a blank symbol, a non-positive amount, or an amount above getWalletBalance(symbol).
         // Spending coins the account does not hold is an IllegalArgumentException, not a pool-liquidity failure.
         if (symbol == null || symbol.isBlank()) {
             throw new IllegalArgumentException("Symbol cannot be null or empty");

@@ -28,7 +28,7 @@ public final class LendingService {
 
     public LendingService(MarketBook markets, Portfolio portfolio,
                           HealthFactorService health, InterestAccrualService interest) {
-        // DONE: reject any null argument.
+        // reject any null argument.
         if (markets == null) {
             throw new IllegalArgumentException("Market book cannot be null");
         }
@@ -49,7 +49,7 @@ public final class LendingService {
 
     public void run(List<Operation> operations)
             throws InsufficientCollateralException, InsufficientLiquidityException {
-        // DONE: reject a null list. Execute each operation in list order. Do not sort:
+        // reject a null list. Execute each operation in list order. Do not sort:
         // the file is already chronological, and two actions can share a timestamp.
         if (operations == null) {
             throw new IllegalArgumentException("Operations cannot be null");
@@ -61,7 +61,7 @@ public final class LendingService {
 
     public void execute(Operation operation)
             throws InsufficientCollateralException, InsufficientLiquidityException {
-        // DONE: dispatch on the operation type to deposit, withdraw, borrow, or repay.
+        // dispatch on the operation type to deposit, withdraw, borrow, or repay.
         // Accrue that asset's market up to the operation timestamp before the balance change.
         if (operation == null) {
             throw new IllegalArgumentException("Operation cannot be null");
@@ -79,7 +79,6 @@ public final class LendingService {
     }
 
     public void deposit(String accountId, String symbol, BigDecimal amount, LocalDateTime at) {
-        // DONE:
         // - Reject an unknown account or market, a null timestamp, a non-positive amount,
         //   or an amount whose scale is greater than the asset's decimals (IllegalArgumentException).
         // - Accrue the market to `at`.
@@ -98,7 +97,6 @@ public final class LendingService {
 
     public void withdraw(String accountId, String symbol, BigDecimal amount, LocalDateTime at)
             throws InsufficientCollateralException, InsufficientLiquidityException {
-        // DONE:
         // - Reject an unknown account or market, a bad amount (non-positive, or finer than `decimals`),
         //   or an amount above the user's supply (IllegalArgumentException).
         //   An amount above the pool's cash throws InsufficientLiquidityException.
@@ -134,7 +132,6 @@ public final class LendingService {
 
     public void borrow(String accountId, String symbol, BigDecimal amount, LocalDateTime at)
             throws InsufficientCollateralException, InsufficientLiquidityException {
-        // DONE:
         // - Reject an unknown account or market, or a bad amount, as in deposit.
         // - Accrue the market to `at` before reading cash or debt.
         // - When amount is above the pool's cash, throw InsufficientLiquidityException.
@@ -169,7 +166,6 @@ public final class LendingService {
     }
 
     public void repay(String accountId, String symbol, BigDecimal amount, LocalDateTime at) {
-        // DONE:
         // - Reject an unknown account or market, a bad amount, or a repay when the account has no loan
         //   of that asset (IllegalArgumentException).
         // - Accrue the market to `at` first, so the cap below includes interest.

@@ -18,7 +18,7 @@ public final class LinearRateModel implements InterestRateModel {
      * @param slope1 annual rate added on top of the base when utilization is 1
      */
     public LinearRateModel(BigDecimal baseRate, BigDecimal slope1) {
-        // DONE: reject a null or negative baseRate or slope1 (IllegalArgumentException).
+        // reject a null or negative baseRate or slope1 (IllegalArgumentException).
         if (baseRate == null || baseRate.compareTo(BigDecimal.ZERO) < 0) {
             throw new IllegalArgumentException("Base rate cannot be null or negative");
         }
@@ -44,7 +44,7 @@ public final class LinearRateModel implements InterestRateModel {
 
     @Override
     public BigDecimal borrowRate(BigDecimal utilization) {
-        // DONE: reject a null or negative utilization (IllegalArgumentException).
+        // reject a null or negative utilization (IllegalArgumentException).
         // Return baseRate + slope1 * utilization, rounded with Precision.
         // At utilization 0 the rate is the base; at utilization 1 it is baseRate + slope1.
         if (utilization == null || utilization.compareTo(BigDecimal.ZERO) < 0) {
@@ -55,7 +55,7 @@ public final class LinearRateModel implements InterestRateModel {
 
     @Override
     public BigDecimal supplyRate(BigDecimal utilization, BigDecimal reserveFactor) {
-        // DONE: reject a null or negative utilization, or a reserveFactor outside [0, 1)
+        // reject a null or negative utilization, or a reserveFactor outside [0, 1)
         // (IllegalArgumentException).
         // Return borrowRate(utilization) * utilization * (1 - reserveFactor), rounded with Precision.
         // Suppliers earn nothing when nobody is borrowing, even if the base rate is positive.

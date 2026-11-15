@@ -21,7 +21,7 @@ public final class HealthFactorService {
     private final PriceOracle oracle;
 
     public HealthFactorService(MarketBook markets, PriceOracle oracle) {
-        // DONE: reject a null book or oracle.
+        // reject a null book or oracle.
         if (markets == null) {
             throw new IllegalArgumentException("Market book cannot be null");
         }
@@ -34,7 +34,7 @@ public final class HealthFactorService {
 
     /** Sum of token supply times {@code Asset.unitValue}. Not weighted by the liquidation threshold. */
     public BigDecimal collateralValue(Position position) {
-        // DONE: for each supplied symbol, look up the market and the oracle price.
+        // for each supplied symbol, look up the market and the oracle price.
         // Add supply * asset.unitValue(price). A missing market or a missing price is an IllegalStateException
         // that names the symbol: the scenario must publish a price before the asset is used as collateral.
         // An empty position is zero, not an error.
@@ -47,7 +47,7 @@ public final class HealthFactorService {
 
     /** Collateral value weighted by each market's liquidation threshold. The numerator of the health factor. */
     public BigDecimal weightedCollateral(Position position) {
-        // DONE: same sum as collateralValue, but multiply each asset's USD value by that market's
+        // same sum as collateralValue, but multiply each asset's USD value by that market's
         // liquidation threshold before adding it.
         BigDecimal sum = BigDecimal.ZERO;
         for (String symbol : position.suppliedSymbols()) {
@@ -64,7 +64,7 @@ public final class HealthFactorService {
      * Uses the collateral factor (loan-to-value), which is tighter than the liquidation threshold.
      */
     public BigDecimal borrowingPower(Position position) {
-        // DONE: sum of each asset's USD collateral value times that market's collateral factor.
+        // sum of each asset's USD collateral value times that market's collateral factor.
         BigDecimal sum = BigDecimal.ZERO;
         for (String symbol : position.suppliedSymbols()) {
             Market market = requireMarket(symbol);
@@ -77,7 +77,7 @@ public final class HealthFactorService {
 
     /** Sum of outstanding debt times the debt asset's unit value. */
     public BigDecimal debtValue(Position position) {
-        // DONE: for each loan, add outstanding * debtAsset.unitValue(oracle price).
+        // for each loan, add outstanding * debtAsset.unitValue(oracle price).
         // A missing market or price is an IllegalStateException naming the symbol.
         // No loans means zero.
         BigDecimal sum = BigDecimal.ZERO;
@@ -93,7 +93,7 @@ public final class HealthFactorService {
      * underwater. Do not substitute zero, which would look liquidatable.
      */
     public Optional<BigDecimal> healthFactor(Position position) {
-        // DONE: when debtValue is zero, return empty. Otherwise weightedCollateral / debtValue,
+        // when debtValue is zero, return empty. Otherwise weightedCollateral / debtValue,
         // rounded with Precision. Use compareTo against zero.
         BigDecimal debt = debtValue(position);
         if (debt.compareTo(BigDecimal.ZERO) == 0) {
@@ -103,7 +103,7 @@ public final class HealthFactorService {
     }
 
     public HealthBand band(Position position) {
-        // DONE: NO_DEBT when healthFactor is empty.
+        // NO_DEBT when healthFactor is empty.
         // AT_THRESHOLD when the factor compares equal to 1.
         // HEALTHY when it is strictly above 1, UNDERWATER when it is strictly below.
         Optional<BigDecimal> factor = healthFactor(position);

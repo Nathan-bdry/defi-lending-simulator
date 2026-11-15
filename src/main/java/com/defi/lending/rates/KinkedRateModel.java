@@ -22,7 +22,7 @@ public final class KinkedRateModel implements InterestRateModel {
      */
     public KinkedRateModel(BigDecimal baseRate, BigDecimal slope1, BigDecimal slope2,
                            BigDecimal optimalUtilization) {
-        // DONE: reject nulls. baseRate, slope1, and slope2 must be >= 0.
+        // reject nulls. baseRate, slope1, and slope2 must be >= 0.
         // optimalUtilization must be strictly inside (0, 1) so both branches have a non-zero span.
         if (baseRate == null || baseRate.compareTo(BigDecimal.ZERO) < 0) {
             throw new IllegalArgumentException("Base rate cannot be null or negative");
@@ -65,7 +65,7 @@ public final class KinkedRateModel implements InterestRateModel {
 
     @Override
     public BigDecimal borrowRate(BigDecimal utilization) {
-        // DONE: reject a null or negative utilization (IllegalArgumentException).
+        // reject a null or negative utilization (IllegalArgumentException).
         // When utilization <= optimalUtilization:
         //     baseRate + slope1 * (utilization / optimalUtilization)
         // Otherwise:
@@ -83,7 +83,7 @@ public final class KinkedRateModel implements InterestRateModel {
 
     @Override
     public BigDecimal supplyRate(BigDecimal utilization, BigDecimal reserveFactor) {
-        // DONE: same contract as LinearRateModel.supplyRate:
+        // same contract as LinearRateModel.supplyRate:
         // borrowRate(utilization) * utilization * (1 - reserveFactor), rounded with Precision.
         // Reject a reserveFactor outside [0, 1).
         if (utilization == null || utilization.compareTo(BigDecimal.ZERO) < 0) {

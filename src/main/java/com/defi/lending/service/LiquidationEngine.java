@@ -30,7 +30,7 @@ public final class LiquidationEngine implements PriceListener {
 
     public LiquidationEngine(MarketBook markets, Portfolio portfolio,
                              HealthFactorService health, InterestAccrualService interest) {
-        // DONE: reject any null argument.
+        // reject any null argument.
         if (markets == null) {
             throw new IllegalArgumentException("Market book cannot be null");
         }
@@ -51,7 +51,6 @@ public final class LiquidationEngine implements PriceListener {
 
     @Override
     public void onPriceUpdate(PriceTick tick) {
-        // DONE:
         // - Accrue every market to tick's timestamp before judging health, so interest is included.
         // - Consider only positions that supply or borrow the updated symbol; other health factors did not change.
         // - Skip a position whose health factor is missing or >= 1. Exactly 1 is not liquidatable.
@@ -122,7 +121,6 @@ public final class LiquidationEngine implements PriceListener {
     public void liquidate(String liquidatorId, String borrowerId, String debtSymbol,
                           String collateralSymbol, BigDecimal repayAmount, LocalDateTime at)
             throws PositionNotLiquidatableException {
-        // DONE:
         // - Reject unknown accounts or markets, a blank argument, a non-positive repayAmount,
         //   or a liquidator and borrower that are the same account.
         // - Accrue both markets to `at` when `at` is not null. A direct call from a test may pass

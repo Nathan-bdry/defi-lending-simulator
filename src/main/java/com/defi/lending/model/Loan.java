@@ -38,7 +38,7 @@ public final class Loan {
     }
 
     public void capitalize(BigDecimal factor) {
-        // DONE: reject a null factor or a factor strictly below 1 (interest never shrinks a debt).
+        // reject a null factor or a factor strictly below 1 (interest never shrinks a debt).
         // A factor of exactly 1 leaves the balance unchanged.
         // Otherwise set outstanding to outstanding * factor, rounded with Precision.
         if (factor == null || factor.compareTo(BigDecimal.ONE) < 0) {
@@ -51,7 +51,7 @@ public final class Loan {
     }
 
     public void increase(BigDecimal amount) {
-        // DONE: reject a null or non-positive amount. Add it to outstanding.
+        // reject a null or non-positive amount. Add it to outstanding.
         if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
             throw new IllegalArgumentException("Amount cannot be null or non-positive");
         }
@@ -59,7 +59,7 @@ public final class Loan {
     }
 
     public void decrease(BigDecimal amount) {
-        // DONE: reject a null or non-positive amount, or an amount above outstanding.
+        // reject a null or non-positive amount, or an amount above outstanding.
         // Subtract it. A repayment that clears the debt leaves outstanding at zero;
         // the position, not the loan, decides when to drop the entry.
         if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
@@ -73,7 +73,7 @@ public final class Loan {
 
     /** Deep copy so a health-factor preview cannot mutate the live debt. */
     public Builder toBuilder() {
-        // DONE: return a builder with the same symbol, openedAt, and outstanding value (not this instance).
+        // return a builder with the same symbol, openedAt, and outstanding value (not this instance).
         return builder()
                 .assetSymbol(assetSymbol)
                 .openedAt(openedAt)
@@ -94,7 +94,7 @@ public final class Loan {
         }
 
         public Builder assetSymbol(String assetSymbol) {
-            // DONE: reject a blank symbol before storing it.
+            // reject a blank symbol before storing it.
             if (assetSymbol == null || assetSymbol.isBlank()) {
                 throw new IllegalArgumentException("Asset symbol cannot be blank");
             }
@@ -103,7 +103,7 @@ public final class Loan {
         }
 
         public Builder openedAt(LocalDateTime openedAt) {
-            // DONE: reject null before storing it.
+            // reject null before storing it.
             if (openedAt == null) {
                 throw new IllegalArgumentException("Opened at cannot be null");
             }
@@ -112,7 +112,7 @@ public final class Loan {
         }
 
         public Builder outstanding(BigDecimal outstanding) {
-            // DONE: reject a null or negative amount before storing it. Zero is a repaid loan and is allowed.
+            // reject a null or negative amount before storing it. Zero is a repaid loan and is allowed.
             if (outstanding == null || outstanding.compareTo(BigDecimal.ZERO) < 0) {
                 throw new IllegalArgumentException("Outstanding cannot be null or negative");
             }
@@ -121,7 +121,7 @@ public final class Loan {
         }
 
         public Loan build() {
-            // DONE: reject a missing symbol, openedAt, or outstanding (IllegalStateException).
+            // reject a missing symbol, openedAt, or outstanding (IllegalStateException).
             // Those checks belong here, once, so every construction path goes through them.
             if (assetSymbol == null || assetSymbol.isBlank()) {
                 throw new IllegalStateException("Asset symbol is missing");

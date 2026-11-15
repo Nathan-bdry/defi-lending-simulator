@@ -26,7 +26,7 @@ public final class PriceScenarioLoader {
      * timestamp is an ISO-8601 local date-time. priceUsd is a non-negative USD price per whole token.
      */
     public List<PriceTick> load(String resourceName) throws DataLoadException {
-        // DONE: read the classpath resource.
+        // read the classpath resource.
         // Map each data row to a PriceTick, preserving file order.
         // Throw DataLoadException, with the file name and line, on a missing file, a bad timestamp or number,
         // or a negative price. A price of zero is valid.

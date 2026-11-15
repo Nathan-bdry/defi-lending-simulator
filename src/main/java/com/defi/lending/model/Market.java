@@ -35,7 +35,7 @@ public final class Market {
     public Market(Asset asset, BigDecimal collateralFactor, BigDecimal liquidationThreshold,
                   BigDecimal liquidationBonus, BigDecimal reserveFactor, BigDecimal closeFactor,
                   InterestRateModel rateModel, LocalDateTime openedAt) {
-        // DONE: reject a null asset, rateModel, or openedAt.
+        // reject a null asset, rateModel, or openedAt.
         // collateralFactor is in (0, 1]. liquidationThreshold is in (0, 1] and >= collateralFactor,
         // otherwise a borrower who used the full loan-to-value would already be underwater.
         // liquidationBonus >= 0. reserveFactor is in [0, 1). closeFactor is in (0, 1].
@@ -132,7 +132,7 @@ public final class Market {
     }
 
     public BigDecimal utilization() {
-        // DONE: when totalSupplied is zero, return zero. An empty pool is not "fully used".
+        // when totalSupplied is zero, return zero. An empty pool is not "fully used".
         // Otherwise return totalBorrowed / totalSupplied, rounded with Precision.
         // Compare with compareTo, not equals.
         if (totalSupplied.compareTo(BigDecimal.ZERO) == 0) {
@@ -142,7 +142,7 @@ public final class Market {
     }
 
     public void onDeposit(BigDecimal amount) {
-        // DONE: reject a null or non-positive amount. Add it to cash and to totalSupplied.
+        // reject a null or non-positive amount. Add it to cash and to totalSupplied.
         if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
             throw new IllegalArgumentException("Amount cannot be null or non-positive");
         }
@@ -151,7 +151,7 @@ public final class Market {
     }
 
     public void onWithdraw(BigDecimal amount) {
-        // DONE: reject a null or non-positive amount, an amount above cash, or an amount above totalSupplied
+        // reject a null or non-positive amount, an amount above cash, or an amount above totalSupplied
         // (IllegalArgumentException). Subtract it from cash and from totalSupplied.
         // This does not check health. LendingService turns a cash shortage into InsufficientLiquidityException
         // before it calls this method, so the market stays free of that exception type.
@@ -169,7 +169,7 @@ public final class Market {
     }
 
     public void onBorrow(BigDecimal amount) {
-        // DONE: reject a null or non-positive amount, or an amount above cash, with IllegalArgumentException.
+        // reject a null or non-positive amount, or an amount above cash, with IllegalArgumentException.
         // The pool cannot lend tokens it does not hold. Subtract from cash and add to totalBorrowed.
         // LendingService is what throws InsufficientLiquidityException, and it does so before calling this.
         if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
@@ -183,7 +183,7 @@ public final class Market {
     }
 
     public void onRepay(BigDecimal amount) {
-        // DONE: reject a null or non-positive amount, or an amount above totalBorrowed.
+        // reject a null or non-positive amount, or an amount above totalBorrowed.
         // Add to cash and subtract from totalBorrowed.
         if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
             throw new IllegalArgumentException("Amount cannot be null or non-positive");
@@ -201,7 +201,7 @@ public final class Market {
      */
     public void bookAccrual(BigDecimal newTotalSupplied, BigDecimal newTotalBorrowed,
                             BigDecimal addedReserves, LocalDateTime at) {
-        // DONE: reject nulls, a timestamp before lastAccrual, a negative reserve increment,
+        // reject nulls, a timestamp before lastAccrual, a negative reserve increment,
         // or totals that would break cash + newTotalBorrowed = newTotalSupplied + (reserves + addedReserves).
         // Then store the new totals, add the reserves, and set lastAccrual to `at`.
         if (newTotalSupplied == null || newTotalBorrowed == null || addedReserves == null || at == null) {

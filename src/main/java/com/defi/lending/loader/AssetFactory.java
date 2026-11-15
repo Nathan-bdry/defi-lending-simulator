@@ -15,7 +15,7 @@ public final class AssetFactory {
 
     public Asset create(String symbol, String name, AssetType type, int decimals,
                         BigDecimal pegBand, BigDecimal volatilityBuffer) {
-        // DONE: switch on type.
+        // switch on type.
         // STABLECOIN requires a non-null pegBand and ignores volatilityBuffer; return a Stablecoin.
         // VOLATILE requires a non-null volatilityBuffer and ignores pegBand; return a VolatileToken.
         // A null type is IllegalArgumentException.

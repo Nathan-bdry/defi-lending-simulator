@@ -17,7 +17,7 @@ public final class Operation {
 
     public Operation(LocalDateTime timestamp, String accountId, OperationType type,
                      String symbol, BigDecimal amount) {
-        // DONE: reject a null timestamp or type, a blank accountId or symbol, or a null or non-positive amount.
+        // reject a null timestamp or type, a blank accountId or symbol, or a null or non-positive amount.
         if (timestamp == null) {
             throw new IllegalArgumentException("Timestamp cannot be null");
         }

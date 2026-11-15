@@ -14,7 +14,7 @@ public final class VolatileToken extends Asset {
 
     public VolatileToken(String symbol, String name, int decimals, BigDecimal volatilityBuffer) {
         super(symbol, name, decimals);
-        // DONE: reject a null volatilityBuffer, or one that is not in [0, 1)
+        // reject a null volatilityBuffer, or one that is not in [0, 1)
         // (IllegalArgumentException). 0.02 values the token at 98% of the oracle price.
         if (volatilityBuffer == null) {
             throw new IllegalArgumentException("Volatility buffer cannot be null");
@@ -36,7 +36,7 @@ public final class VolatileToken extends Asset {
 
     @Override
     public BigDecimal unitValue(BigDecimal oraclePrice) {
-        // DONE: reject a null or negative oraclePrice (IllegalArgumentException).
+        // reject a null or negative oraclePrice (IllegalArgumentException).
         // Return oraclePrice * (1 - volatilityBuffer), rounded with Precision. Never negative.
         if (oraclePrice == null) {
             throw new IllegalArgumentException("Oracle price cannot be null");

@@ -21,7 +21,7 @@ public final class InterestAccrualService {
     private final Portfolio portfolio;
 
     public InterestAccrualService(MarketBook markets, Portfolio portfolio) {
-        // DONE: reject a null book or portfolio.
+        // reject a null book or portfolio.
         if (markets == null) {
             throw new IllegalArgumentException("Market book cannot be null");
         }
@@ -37,7 +37,6 @@ public final class InterestAccrualService {
      * Reads utilization before changing any balance, then updates positions, then the market.
      */
     public void accrue(Market market, LocalDateTime to) {
-        // DONE:
         // 1. Reject a null market or timestamp. If `to` equals lastAccrual, return.
         //    If `to` is before lastAccrual, throw IllegalArgumentException.
         // 2. From the totals as they are now, read utilization, borrowRate, and supplyRate
@@ -95,7 +94,7 @@ public final class InterestAccrualService {
     }
 
     public void accrueAll(LocalDateTime to) {
-        // DONE: accrue every market in the book to the same timestamp.
+        // accrue every market in the book to the same timestamp.
         for (Market market : markets.all()) {
             accrue(market, to);
         }

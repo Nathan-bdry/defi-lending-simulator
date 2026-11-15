@@ -19,7 +19,7 @@ public final class RiskReportService {
     private final HealthFactorService health;
 
     public RiskReportService(Portfolio portfolio, HealthFactorService health) {
-        // DONE: reject a null portfolio or health service.
+        // reject a null portfolio or health service.
         if (portfolio == null) {
             throw new IllegalArgumentException("Portfolio cannot be null");
         }
@@ -31,7 +31,7 @@ public final class RiskReportService {
     }
 
     public RiskReport build(LocalDateTime asOf) {
-        // DONE: reject a null timestamp.
+        // reject a null timestamp.
         // Keep positions that have a health factor (those with debt). Drop pure suppliers.
         // Sort by health factor ascending, so the riskiest line is first.
         // Break ties by account id so two equal factors do not swap between runs.

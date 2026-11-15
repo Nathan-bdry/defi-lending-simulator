@@ -57,10 +57,6 @@ public final class Application {
             System.err.println("Operation refused: " + ex.getMessage());
         } catch (IllegalArgumentException | IllegalStateException ex) {
             System.err.println("Cannot continue: " + ex.getMessage());
-        } catch (UnsupportedOperationException ex) {
-            // Rule methods throw this until their TODO is replaced, so a run explains what is left.
-            System.err.println("Not implemented yet: " + ex.getMessage());
-            System.err.println("The project compiles. Complete the TODOs to run the simulation.");
         }
     }
 

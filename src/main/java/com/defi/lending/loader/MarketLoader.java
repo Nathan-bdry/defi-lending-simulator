@@ -32,7 +32,7 @@ public final class MarketLoader {
     private final AssetFactory assets;
 
     public MarketLoader(AssetFactory assets) {
-        // DONE: reject a null factory. Injected so this class does not construct asset subclasses itself.
+        // reject a null factory. Injected so this class does not construct asset subclasses itself.
         if (assets == null) {
             throw new IllegalArgumentException("Asset factory cannot be null");
         }
@@ -48,7 +48,7 @@ public final class MarketLoader {
      * openedAt is an ISO-8601 local date-time, the moment interest starts.
      */
     public List<Market> load(String resourceName) throws DataLoadException {
-        // DONE: read the classpath resource (comments, header, line numbers).
+        // read the classpath resource (comments, header, line numbers).
         // For each data row, ask the factory for the asset, construct a LinearRateModel or a KinkedRateModel
         // from rateModel, then construct a Market. Use `assets` for every row.
         // Throw DataLoadException, naming the file and the line, on a missing file, a bad number,

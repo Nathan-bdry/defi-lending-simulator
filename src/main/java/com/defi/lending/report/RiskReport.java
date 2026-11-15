@@ -13,7 +13,7 @@ public final class RiskReport {
     private final List<PositionRisk> ranked;
 
     public RiskReport(LocalDateTime asOf, List<PositionRisk> ranked) {
-        // DONE: reject a null timestamp or a null list.
+        // reject a null timestamp or a null list.
         if (asOf == null) {
             throw new IllegalArgumentException("Timestamp cannot be null");
         }

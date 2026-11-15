@@ -19,7 +19,7 @@ public final class PositionRisk {
 
     public PositionRisk(String accountId, String displayName, BigDecimal healthFactor,
                         HealthBand band, BigDecimal collateralValue, BigDecimal debtValue) {
-        // DONE: reject a blank id or name, a null factor or band, or a negative collateral or debt value.
+        // reject a blank id or name, a null factor or band, or a negative collateral or debt value.
         if (accountId == null || accountId.isBlank()) {
             throw new IllegalArgumentException("Account id cannot be blank");
         }
