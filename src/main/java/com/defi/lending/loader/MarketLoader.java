@@ -48,7 +48,7 @@ public final class MarketLoader {
      * openedAt is an ISO-8601 local date-time, the moment interest starts.
      */
     public List<Market> load(String resourceName) throws DataLoadException {
-        // DONE: read the classpath resource with the rules in PLAN.md (comments, header, line numbers).
+        // DONE: read the classpath resource (comments, header, line numbers).
         // For each data row, ask the factory for the asset, construct a LinearRateModel or a KinkedRateModel
         // from rateModel, then construct a Market. Use `assets` for every row.
         // Throw DataLoadException, naming the file and the line, on a missing file, a bad number,

@@ -4,8 +4,6 @@ A console simulator of an overcollateralized money market in the style of Aave. 
 
 The domain is the one used by production lending protocols: collateral factor, liquidation threshold, kinked interest, close factor, and an oracle. The structure is a Java OOP project aimed at that same domain.
 
-The numeric rules are specified as `// TODO` notes on the methods that own them, and those methods throw until the notes are implemented. The project compiles, the sample books are real, and the startup flow is already wired.
-
 ## Purpose
 
 Show, in a program small enough to defend line by line, how a lending pool prices risk. Supply is not the same thing as a wallet balance. Borrowing is limited by collateral and by the cash actually sitting in the pool. Interest is a function of utilization. A price move is what makes a previously healthy loan liquidatable. The closing risk report ranks whatever debt survived the scenario.
@@ -25,7 +23,7 @@ The argument, when present, is the classpath name of a price scenario. It defaul
 java -jar target/defi-lending-simulator-0.1.0-SNAPSHOT.jar prices_crash.csv
 ```
 
-Until the TODOs are filled in, the process prints `Not implemented yet` and the name of the first method that still throws. Files are read from the classpath (`src/main/resources`), not from a working-directory path.
+The CSV files are read from the classpath (`src/main/resources`), not from a working-directory path.
 
 ## Main features
 
@@ -85,9 +83,9 @@ Validation of arguments (blank symbol, negative amount, factor out of range) use
 
 On startup `Application` loads five classpath resources, in this order: `markets.csv`, `accounts.csv`, `operations.csv`, `prices_initial.csv`, and the scenario (default `prices_crash.csv`). Nothing in the Java sources is a balance, a price, or a risk parameter.
 
-The sample book is five listings (ETH, WBTC, SOL, USDC, DAI), six accounts, a short sequence of deposits and borrows, opening prices, and a crash. Carol supplies USDC and DAI. Alice, Dave, Erin, and Frank borrow against ETH, SOL, WBTC, and DAI. Bob is the liquidator and keeps USDC in his wallet so he can repay other people's debt. The crash file is commented with the prints that are meant to cross a health factor of 1. Those comments assume the formulas in `PLAN.md`; accrued interest moves the exact figures slightly.
+The sample book is five listings (ETH, WBTC, SOL, USDC, DAI), six accounts, a short sequence of deposits and borrows, opening prices, and a crash. Carol supplies USDC and DAI. Alice, Dave, Erin, and Frank borrow against ETH, SOL, WBTC, and DAI. Bob is the liquidator and keeps USDC in his wallet so he can repay other people's debt. Comments in `prices_crash.csv` name the prices that are meant to push a health factor through 1. Accrued interest between 1 March and 15 March moves those figures slightly.
 
-Reading rules, column lists, and the formulas are in `PLAN.md`. The loaders are where parsing is implemented. There is no CSV library.
+The loaders parse the CSVs with the JDK. There is no CSV library. Blank lines and lines whose first non-space character is `#` are skipped, and the first remaining line is the header.
 
 ## How SOLID is applied
 
@@ -105,4 +103,4 @@ There is no type that both parses files and liquidates loans.
 mvn test
 ```
 
-Tests cover the protocol rules (valuation, rates, accrual, lending, liquidation). They are marked `@Disabled("TODO")` until the method they describe exists. Each disabled method says whether it is the normal case, a boundary (including a health factor of exactly 1), or an invalid or exception case. Enable them one at a time as the matching TODO is implemented. `mvn test` passes while they stay disabled.
+Tests cover the protocol rules: valuation, rates, accrual, lending, and liquidation. Each area includes the normal case, the boundary where the health factor is exactly 1, and invalid input that must throw.

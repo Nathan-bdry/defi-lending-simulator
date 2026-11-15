@@ -25,7 +25,7 @@ public final class AccountLoader {
      * the display name and role must match the first row for that id.
      */
     public Portfolio load(String resourceName) throws DataLoadException {
-        // DONE: read the classpath resource with the rules in PLAN.md.
+        // DONE: read the classpath resource.
         // Create each account once, open an empty position for it, and credit the wallet with the row's balance.
         // A non-positive balance is a DataLoadException. Register the account and position on the portfolio.
         // Throw DataLoadException, with the file name and line, on a missing file, a bad number,
