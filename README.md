@@ -1,5 +1,7 @@
 # DeFi Lending Protocol Simulator
 
+[![CI](https://github.com/Nathan-bdry/defi-lending-simulator/actions/workflows/ci.yml/badge.svg)](https://github.com/Nathan-bdry/defi-lending-simulator/actions/workflows/ci.yml)
+
 A console simulator of an overcollateralized money market in the style of Aave. Depositors supply crypto assets and earn interest that rises with utilization. Borrowers post collateral, and a position that falls through a health factor of 1 can be liquidated, with a bonus for the liquidator. Prices are replayed from a file, so a crash can be demonstrated without a network, a wallet, or a chain.
 
 The domain is the one used by production lending protocols: collateral factor, liquidation threshold, kinked interest, close factor, and an oracle. The structure is a Java OOP project aimed at that same domain.
@@ -24,6 +26,26 @@ java -jar target/defi-lending-simulator-0.1.0-SNAPSHOT.jar prices_crash.csv
 ```
 
 The CSV files are read from the classpath (`src/main/resources`), not from a working-directory path.
+
+## Sample output
+
+The jar, with no arguments, runs `prices_crash.csv`. It deposits collateral, borrows against it, replays the price path, liquidates where the health factor is below 1, and prints one report. The first line is the time of the last tick. Each following line is:
+
+`rank | account id | name | health factor | band | collateral USD | debt USD`
+
+The health factor is weighted collateral divided by debt, shown to 4 decimal places. A factor strictly below 1 is `UNDERWATER`.
+
+Carol deposits 500,000 USDC and 200,000 DAI, which is the cash the others borrow. Alice deposits 10 ETH and borrows 15,000 USDC. Erin deposits 0.5 WBTC and borrows 10,000 DAI. Dave deposits 500 SOL and borrows 44,000 USDC. Frank deposits 20,000 DAI and borrows 15,000 USDC. Prices then move to SOL 120, ETH 2,200, ETH 1,600, WBTC 70,000, DAI 0.90, and SOL 90. USDC is still priced at 1, so the debt column on a USDC loan is the balance still owed. The close factor is 0.5, and one tick repays a position at most once.
+
+```
+2026-03-15T12:00:00
+1 | dave | Dave Okonkwo | 0.7948 | UNDERWATER | 12492.413054536743126270 | 11002.766594540101018182
+2 | alice | Alice Chen | 0.8633 | UNDERWATER | 7803.024326495762611968 | 7501.886390581801232141
+3 | frank | Frank Meier | 1.0644 | HEALTHY | 9980.873267435666150353 | 7501.886164751300921395
+4 | erin | Erin Walsh | 2.8858 | HEALTHY | 34300.000000000000000000 | 8914.193495133613532328
+```
+
+Dave's debt is a quarter of the 44,000 USDC he borrowed. SOL at 120 and SOL at 90 each repaid half of what he still owed, and the report still has him `UNDERWATER`. Alice's debt is half of her 15,000 USDC. The ETH print at 2,200 left her solvent; the print at 1,600 did not, and half the loan is still below 1. Frank's USDC debt is half of 15,000 after DAI left the peg, which is enough to put him back to `HEALTHY`. Erin was not liquidated: WBTC at 70,000 leaves the health factor well above 1. Interest accrued from 1 March to 15 March is why the halved balances sit a little above the round figure.
 
 ## Main features
 
